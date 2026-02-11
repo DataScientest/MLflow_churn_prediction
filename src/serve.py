@@ -15,9 +15,10 @@ def serve():
     # This wrapper allows us to set defaults and handle environment setup easily.
     cmd = [
         "mlflow", "models", "serve",
-        "-m", MODEL_URI,
-        "-p", str(PORT),
-        "--no-conda" # We are already in the environment
+        "--model-uri", MODEL_URI,
+        "--host", "0.0.0.0",
+        "--port", str(PORT),
+        "--no-conda" 
     ]
     
     try:

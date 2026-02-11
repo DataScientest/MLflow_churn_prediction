@@ -7,6 +7,7 @@ def run_pipeline():
     
     # 1. Train
     print("\n[Step 1] Training Model...")
+    # Using subprocess to run locally and avoid Docker volume mount issues on Windows with spaces in paths
     subprocess.run(["uv", "run", "src/train.py"], check=True)
     
     # Retrieve the last run ID
@@ -30,10 +31,11 @@ def run_pipeline():
     subprocess.run(["uv", "run", "src/register.py"], check=True, env=env)
     
     # 4. Serve
-    print("\n[Step 4] Serving Model (Instruction)...")
+    print("\n[Step 4] Serving Model...")
     print(f"Model from run {run_id} is now registered in 'Staging'.")
-    print("To serve locally, run:")
-    print("mlflow models serve -m models:/ChurnModel/Staging -p 5000")
+    print("To serve, choose one method:")
+    print("  1. Docker Compose (Recommended): docker compose up --build")
+    print("  2. Local CLI: mlflow models serve -m models:/ChurnModel/Staging -p 5000 --no-conda")
 
 if __name__ == "__main__":
     run_pipeline()
