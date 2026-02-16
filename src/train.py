@@ -25,30 +25,12 @@ def train():
 
     # 2. Setup MLflow
     # Insert your code here
-    mlflow.set_experiment(EXPERIMENT_NAME)
+ 
     
-    # Insert your code here
     # Enable Autologging (disable system metrics for cleaner output)
     # This captures params, metrics, model artifacts, and system metrics automatically
-    mlflow.sklearn.autolog(
-        log_input_examples=True, 
-        log_model_signatures=True,
-        silent=True 
-    )
-
     # Insert your code here
-    with mlflow.start_run(run_name="Model_Training"):
-        print("Starting training run...")
-        
-        # 3. Model Training
-        rf = RandomForestClassifier(
-            n_estimators=N_ESTIMATORS,
-            max_depth=MAX_DEPTH,
-            random_state=42
-        )
-        rf.fit(X_train, y_train)
-        
-        print(f"Run complete! Artifacts saved to 'mlruns'")
+
 
 if __name__ == "__main__":
     train()

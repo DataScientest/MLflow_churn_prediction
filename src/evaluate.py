@@ -19,11 +19,7 @@ def get_latest_run_id():
     try:
         # Insert your code here
         # Search for the latest run in the experiment
-        last_run = mlflow.search_runs(
-            experiment_names=[EXPERIMENT_NAME], 
-            order_by=["start_time DESC"], 
-            max_results=1
-        )
+       
         if not last_run.empty:
             return last_run.iloc[0].run_id
     except Exception:
@@ -55,24 +51,7 @@ def evaluate():
 
     # Insert your code here
     # Ensure we log to the same experiment as training
-    mlflow.set_experiment(EXPERIMENT_NAME)
-    
-    with mlflow.start_run(run_name="Model_Evaluation"):
-        # Insert your code here
-        # Use mlflow.models.evaluate
-        result = mlflow.evaluate(
-            model=model_uri,
-            data=eval_data,
-            targets="Churn",
-            model_type="classifier",
-            evaluators=["default"],
-        )
-        
-        print("\nEvaluation metrics logged to MLflow:")
-        # Print a clean subset of metrics
-        metrics_to_show = ["accuracy_score", "f1_score", "roc_auc"]
-        clean_metrics = {k: v for k, v in result.metrics.items() if k in metrics_to_show}
-        print(clean_metrics)
+
 
 if __name__ == "__main__":
     evaluate()
