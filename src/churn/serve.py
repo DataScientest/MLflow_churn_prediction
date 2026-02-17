@@ -14,13 +14,7 @@ def serve():
     # Insert your code here
     # We use subprocess to call the CLI. 
     # This wrapper allows us to set defaults and handle environment setup easily.
-    cmd = [
-        "mlflow", "models", "serve",
-        "--model-uri", MODEL_URI,
-        "--host", "0.0.0.0",
-        "--port", str(PORT),
-        "--no-conda" 
-    ]
+    cmd = 
     
     try:
         subprocess.run(cmd, check=True)

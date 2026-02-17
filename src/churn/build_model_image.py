@@ -15,11 +15,7 @@ def build_model_image():
     try:
         # Insert your code here
         # MLflow built-in function to generate a Docker image containing the model
-        mlflow.models.build_docker(
-            model_uri=model_uri,
-            name=DOCKER_IMAGE_NAME,
-            enable_mlserver=True, # Improved serving performance
-        )
+        
         print(f"\nSUCCESS: Image '{DOCKER_IMAGE_NAME}' built.")
         print(f"Run it with: docker run -p 5000:8080 {DOCKER_IMAGE_NAME}")
         

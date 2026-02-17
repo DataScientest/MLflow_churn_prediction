@@ -39,20 +39,14 @@ def register(run_id=None):
     
     # 1. Register Model
     # Insert your code here
-    model_uri = f"runs:/{run_id}/model"
-    model_details = mlflow.register_model(model_uri=model_uri, name=MODEL_NAME)
     
     print(f"Model registered. Version: {model_details.version}")
     # 2. Transition to Staging
     # Insert your code here
-    client = MlflowClient()
+    
     print(f"Transitioning version {model_details.version} to Staging...")
     
-    client.transition_model_version_stage(
-        name=MODEL_NAME,
-        version=model_details.version,
-        stage="Staging"
-    )
+    
     print("Transition complete.")
 
 if __name__ == "__main__":
