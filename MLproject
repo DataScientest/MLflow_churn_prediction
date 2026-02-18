@@ -2,7 +2,8 @@ name: churn-prediction
 
 # Environment: use the Docker image built from docker/Dockerfile
 docker_env:
-  image: churn-prediction-env
+  image: churn-prediction-project-env
+  dockerfile: docker/Dockerfile.project
 
 entry_points:
   # Train the model
