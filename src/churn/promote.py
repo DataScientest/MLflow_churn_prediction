@@ -97,7 +97,6 @@ def promote():
         # Transition to Production
         
         print(f"Model version {staging_version.version} is now in Production!")
-        print(f"   Tagged with git_sha={git_sha}")
     else:
         print(f"\n F1 score ({f1:.4f}) < threshold ({F1_THRESHOLD}). NOT promoting.")
         print("   Improve your model or lower the threshold.")
