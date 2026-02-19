@@ -25,7 +25,8 @@ def get_latest_run_id():
 def register(run_id=None):
     # Evaluate at runtime to pick up values set by pipeline.py
     if not run_id:
-        run_id = os.getenv("MLFLOW_RUN_ID") 
+        #run_id = os.getenv("MLFLOW_RUN_ID") 
+        pass
     
     if not run_id:
         print("MLFLOW_RUN_ID not set. Attempting to auto-detect latest run...")
