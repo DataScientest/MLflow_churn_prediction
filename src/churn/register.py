@@ -13,6 +13,7 @@ def get_latest_run_id():
     try:
         last_run = mlflow.search_runs(
             experiment_names=[EXPERIMENT_NAME], 
+            filter_string="tags.mlflow.runName = 'Model_Training'",
             order_by=["start_time DESC"], 
             max_results=1
         )
@@ -39,14 +40,28 @@ def register(run_id=None):
     print(f"Registering model from Run ID: {run_id} as '{MODEL_NAME}'...")
     
     # 1. Register Model
+    # Inside Docker (mlflow run), the volume is mounted at /mlflow/tmp/mlruns
+    # But the metadata stores the host path. We need to help MLflow find it.
+    if os.path.exists("/mlflow/tmp/mlruns"):
+        model_uri = f"file:///mlflow/tmp/mlruns/{mlflow.get_experiment_by_name(EXPERIMENT_NAME).experiment_id}/{run_id}/artifacts/model"
+    else:
+        model_uri = f"runs:/{run_id}/model"
+
     # Insert your code here
+
+    # Check if model already exists, if not create it
+    try:
+        # Insert your code here
+    except Exception:
+        print(f"Creating registered model '{MODEL_NAME}'...")
+        # Insert your code here
     
     print(f"Model registered. Version: {model_details.version}")
     # 2. Transition to Staging
     # Insert your code here
     
     print(f"Transitioning version {model_details.version} to Staging...")
-    
+    # Insert your code here
     
     print("Transition complete.")
 
