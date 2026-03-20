@@ -11,6 +11,10 @@ import mlflow
 import sys
 import os
 import importlib
+from dotenv import load_dotenv
+
+# Load environment variables from .env
+load_dotenv(override=True)
 
 # Add src/ to the Python path so churn package is importable
 sys.path.insert(0, os.path.join(os.path.dirname(__file__)))
@@ -23,7 +27,7 @@ from churn.promote import promote
 
 def run_pipeline():
     print("=" * 60)
-    print("  MLOps Pipeline: Train → Evaluate → Register → Promote")
+    print("  MLOps Pipeline: Train -> Evaluate -> Register -> Promote")
     print("=" * 60)
 
     # 1. Train

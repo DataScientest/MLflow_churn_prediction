@@ -1,10 +1,12 @@
 import mlflow
 import os
 from mlflow.tracking import MlflowClient
+from dotenv import load_dotenv
+
+# Load environment variables from .env
+load_dotenv(override=True)
 
 # --- Configuration ---
-# In a pipeline, we pass this via environment variable.
-# For manual testing, we try to detect the latest run.
 MODEL_NAME = "ChurnModel"
 EXPERIMENT_NAME = "Churn_Prediction_Basic"
 
@@ -24,11 +26,6 @@ def get_latest_run_id():
     return None
 
 def register(run_id=None):
-    # Evaluate at runtime to pick up values set by pipeline.py
-    if not run_id:
-        #run_id = os.getenv("MLFLOW_RUN_ID") 
-        pass
-    
     if not run_id:
         print("MLFLOW_RUN_ID not set. Attempting to auto-detect latest run...")
         run_id = get_latest_run_id()
@@ -39,31 +36,21 @@ def register(run_id=None):
 
     print(f"Registering model from Run ID: {run_id} as '{MODEL_NAME}'...")
     
-    # 1. Register Model
-    # Inside Docker (mlflow run), the volume is mounted at /mlflow/tmp/mlruns
-    # But the metadata stores the host path. We need to help MLflow find it.
-    if os.path.exists("/mlflow/tmp/mlruns"):
-        model_uri = f"file:///mlflow/tmp/mlruns/{mlflow.get_experiment_by_name(EXPERIMENT_NAME).experiment_id}/{run_id}/artifacts/model"
-    else:
-        model_uri = f"runs:/{run_id}/model"
-
-    # Insert your code here
-
-    # Check if model already exists, if not create it
-    try:
-        # Insert your code here
-    except Exception:
-        print(f"Creating registered model '{MODEL_NAME}'...")
-        # Insert your code here
+    # Standard high-level registration
+    model_uri = f"runs:/{run_id}/model"
+    model_details = mlflow.register_model(model_uri, MODEL_NAME)
     
     print(f"Model registered. Version: {model_details.version}")
     # 2. Transition to Staging
-    # Insert your code here
-    
     print(f"Transitioning version {model_details.version} to Staging...")
-    # Insert your code here
     
+    client = MlflowClient()
+    client.transition_model_version_stage(
+        name=MODEL_NAME,
+        version=model_details.version,
+        stage="Staging"
+    )
     print("Transition complete.")
 
 if __name__ == "__main__":
-    register()
+    register()

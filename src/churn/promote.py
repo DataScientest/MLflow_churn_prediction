@@ -13,6 +13,10 @@ from mlflow.tracking import MlflowClient
 import subprocess
 import logging
 import warnings
+from dotenv import load_dotenv
+
+# Load environment variables from .env
+load_dotenv(override=True)
 
 # --- Setup Logging ---
 logging.getLogger("mlflow").setLevel(logging.ERROR)
@@ -39,7 +43,14 @@ def get_evaluation_metrics(run_id):
     """Retrieve F1 score from the evaluation run associated with a model."""
     # Search for evaluation runs that evaluated this model
     # Insert your code here
-    
+    eval_runs = mlflow.search_runs(
+        experiment_names=[EXPERIMENT_NAME],
+        filter_string=f"tags.mlflow.runName = 'Model_Evaluation'",
+        order_by=["start_time DESC"],
+        max_results=1,
+    )
+    if eval_runs.empty:
+        return None
     
     f1 = eval_runs.iloc[0].get("metrics.f1_score")
     accuracy = eval_runs.iloc[0].get("metrics.accuracy_score")
@@ -60,10 +71,10 @@ def get_git_sha():
 
 def promote():
     # Insert your code here
-    
+    client = MlflowClient()
 
     # 1. Find the model in Staging
-    
+    staging_version = get_staging_model_version(client)
     if not staging_version:
         print("No model version found in 'Staging'. Run the pipeline first.")
         return
@@ -72,7 +83,7 @@ def promote():
     print(f"  Source Run: {staging_version.run_id}")
 
     # 2. Check evaluation metrics
-    
+    metrics = get_evaluation_metrics(staging_version.run_id)
     if metrics is None:
         print("No evaluation metrics found. Run evaluate.py first.")
         return
@@ -95,8 +106,14 @@ def promote():
 
         # Insert your code here
         # Transition to Production
-        
+        client.transition_model_version_stage(
+            name=MODEL_NAME,
+            version=staging_version.version,
+            stage="Production",
+            archive_existing_versions=True  # Archive previous production versions
+        )
         print(f"Model version {staging_version.version} is now in Production!")
+        print(f"   Tagged with git_sha={git_sha}")
     else:
         print(f"\n F1 score ({f1:.4f}) < threshold ({F1_THRESHOLD}). NOT promoting.")
         print("   Improve your model or lower the threshold.")
