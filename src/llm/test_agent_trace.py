@@ -14,12 +14,11 @@ def verify_traces():
     with the required spans (churn_risk, retention_rules, generate).
     """
     # 1. Setup MLflow
-    mlflow.set_tracking_uri(os.getenv("MLFLOW_TRACKING_URI", "http://localhost:5000"))
-    mlflow.set_experiment("Churn_Prediction_Basic")
+    # Insert your code here
 
     # 2. Initialize Agent
     # Use the numeric prompt version registered in MLflow 
-    agent = create_retention_agent(prompt_version=2)
+    agent = 
 
     # 3. Trigger Trace
     # Scenario: A customer with a specific ID asking for a discount
@@ -27,17 +26,8 @@ def verify_traces():
     
     print(f"Starting trace verification for query: '{test_query}'...")
     
-    with mlflow.start_run(run_name="trace_verification_v0.1"):
-        mlflow.set_tags({
-            "prompt_version": "v0.1",
-            "churn_model_version": "Production",
-            "rules_version": "v1.0",
-            "env": "dev",
-            "verification_type": "manual_trace"
-        })
-        
-        response = agent.invoke({"input": test_query})
-        
+    # Insert your code here
+
     print("\n--- AGENT OUTPUT ---")
     print(response["output"])
     print("\n--- TRACE VERIFIED ---")

@@ -165,3 +165,8 @@ MLFLOW_TRACKING_URI=$(MLFLOW_URI) uv run python src/llm/evaluate_agent.py --vers
 .PHONY: evaluate-agent-direct
 evaluate-agent-direct: ## Direct evaluation (no MLflow wrapper). Usage: make evaluate-agent-direct version=1
 MLFLOW_TRACKING_URI=$(MLFLOW_URI) uv run python src/llm/evaluate_agent.py --version $(version)
+
+# Professional evaluation
+.PHONY: evaluate-agent-pro
+evaluate-agent-pro: ## Professional parallel evaluation. Usage: make evaluate-agent-pro version=1 max=10 workers=3
+MLFLOW_TRACKING_URI=$(MLFLOW_URI) uv run python src/llm/evaluate_agent_pro.py --version $(version) --max-queries $(or $(max),10) --max-workers $(or $(workers),3)

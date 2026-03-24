@@ -8,7 +8,7 @@ load_dotenv(override=False)
 from langchain_openai import ChatOpenAI
 from langchain_ollama import ChatOllama
 from langchain.messages import SystemMessage, HumanMessage
-from tools import get_churn_risk, retrieve_retention_rules, escalate_to_human
+from tools import get_churn_risk, retrieve_retention_rules
 from prompts import load_prompt_version
 
 

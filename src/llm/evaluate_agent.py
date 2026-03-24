@@ -294,11 +294,7 @@ def evaluate_agent(version=1, max_queries: Optional[int] = None, timeout_seconds
             }
         )
 
-        result = mlflow.genai.evaluate(
-            data=data,
-            predict_fn=predict_fn,
-            scorers=[json_scorer, policy_scorer, business_scorer, customer_id_scorer, risk_grounding_scorer, llm_judge_business_scorer],
-        )
+        result = # Insert your code here
 
         metrics = dict(result.metrics)
         metrics["avg_latency_seconds"] = float(sum(stats["latencies"]) / len(stats["latencies"])) if stats["latencies"] else 0.0
