@@ -114,7 +114,8 @@ services:
     
 
   # ---- Agent Evaluator ----
-  
+  agent-evaluator:
+    
 
 volumes:
   postgres_data:
