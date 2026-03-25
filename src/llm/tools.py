@@ -97,7 +97,6 @@ def retrieve_retention_rules(query: str) -> str:
 
 
 @tool
-@mlflow.trace
 def escalate_to_human(reason: str) -> str:
     """
     Escalates the case to a human supervisor when no automated policy is found
