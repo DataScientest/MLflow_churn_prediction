@@ -324,6 +324,7 @@ def evaluate_agent(version=1, max_queries: Optional[int] = None, timeout_seconds
             }
         )
 
+        # Use the evaluate function form mlflow.genai
         result = # Insert your code here
 
         metrics = dict(result.metrics)

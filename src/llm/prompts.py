@@ -26,21 +26,21 @@ Your goal is to propose a legitimate retention offer based on customer churn ris
 
 ### OUTPUT CONTRACT (JSON STRICT)
 You MUST output exactly this JSON format and nothing else:
-{{
+{
   "customer_id": "string or null",
-  "risk": {{ "score": float or null, "label": "string" }},
-  "offer": {{ "name": "string", "value": "string", "eligibility_rule_id": "string" }} or null,
+  "risk": { "score": float or null, "label": "string" },
+  "offer": { "name": "string", "value": "string", "eligibility_rule_id": "string" } or null,
   "justification": "string",
   "email_draft": "string",
   "sources": ["rule_id_1", "rule_id_2"]
-}}
+}
 
 ### RULES
 - If no policy rule applies, set "offer" to null and "sources" to [].
 - Only propose an offer if evidence supports it.
 - Always use the tools to find information.
 
-Customer Input: {{input}}
+Customer Input: {input}
 """
     # Register prompt wiwth MLflow
     # Insert your code here
@@ -58,14 +58,14 @@ Analyze the customer request, look up their data with tools, then respond with t
 ### OUTPUT CONTRACT (JSON STRICT)
 You MUST output exactly this JSON format wrapped in ```json ... ``` blocks:
 ```json
-{{
+{
   "customer_id": "string or null",
-  "risk": {{ "score": float or null, "label": "string" }},
-  "offer": {{ "name": "string", "value": "string", "eligibility_rule_id": "string" }} or null,
+  "risk": { "score": float or null, "label": "string" },
+  "offer": { "name": "string", "value": "string", "eligibility_rule_id": "string" } or null,
   "justification": "string",
   "email_draft": "string",
   "sources": ["rule_id_1", "rule_id_2"]
-}}
+}
 ```
 
 ### EXAMPLES
@@ -112,6 +112,7 @@ def load_prompt_version(version):
 
     # Integer version
     return # Insert your code here
+
 if __name__ == "__main__":
     mlflow.set_tracking_uri(os.getenv("MLFLOW_TRACKING_URI", "http://localhost:5000"))
     print("Registering retention assistant prompts...")

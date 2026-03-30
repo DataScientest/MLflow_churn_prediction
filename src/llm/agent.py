@@ -83,9 +83,12 @@ def create_retention_agent(prompt_version=1):
             api_key=os.getenv("LITELLM_KEY") or os.getenv("OPENAI_API_KEY"),
         )
 
-    # 3. Load Prompt from Registry (Phase 3 alignment)
+    # 3. Load Prompt from Registry
+    #    • Integer  → specific version for evaluation (e.g. prompt_version=2)
+    #    • "@production" / "@challenger" → alias for production / rollback
     prompt_obj = load_prompt_version(version=prompt_version)
     system_message = prompt_obj.template
+    print(f"Loaded prompt: {prompt_obj.name} (version={prompt_obj.version}, requested={prompt_version!r})")
 
     return RetentionAgent(llm=llm, system_message=system_message)
 
