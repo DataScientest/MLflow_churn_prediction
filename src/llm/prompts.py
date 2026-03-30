@@ -44,11 +44,7 @@ Customer Input: {{input}}
 """
     # Register prompt wiwth MLflow
     # Insert your code here
-    mlflow.genai.register_prompt(
-        name=PROMPT_NAME,
-        template=baseline_template,
-        commit_message="v0.1: Baseline - Strict JSON contract, no few-shot."
-    )
+    
     
     candidate_template = """You are an authorized Intelligent Retention Assistant for a telecommunications company.
 Analyze the customer request, look up their data with tools, then respond with the appropriate retention offer.
@@ -102,19 +98,20 @@ Customer Input: {{input}}
 """
     # Register prompt wiwth MLflow
     # Insert your code here
-    mlflow.genai.register_prompt(
-        name=PROMPT_NAME,
-        template=candidate_template,
-        commit_message="v0.2: Candidate - Added few-shot examples and strict grounding."
-    )
+    
 
-def load_prompt_version(version: int):
+def load_prompt_version(version):
     """
     Loads a specific version of a prompt from the registry.
     """
     # Load prompt with Mlflow
-    return mlflow.genai.load_prompt(PROMPT_NAME, version=version)
+    if isinstance(version, str) and version.startswith("@"):
+        # Alias-based lookup, e.g. "@production" or "@challenger"
+        alias = version.lstrip("@")
+        return # Insert your code here
 
+    # Integer version
+    return # Insert your code here
 if __name__ == "__main__":
     mlflow.set_tracking_uri(os.getenv("MLFLOW_TRACKING_URI", "http://localhost:5000"))
     print("Registering retention assistant prompts...")
