@@ -1,5 +1,5 @@
 FROM python:3.10-slim
-LABEL build_version="2.0-fix-gunicorn"
+LABEL build_version="2.0-mlflow-fix"
 
 # Install uv
 RUN pip install uv
