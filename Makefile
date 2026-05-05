@@ -1,5 +1,12 @@
 # reset local mlruns from scratch
-.PHONY: all train evaluate register promote workflow build-model-image build-project-image fix-mlflow-perms clean-broken-mlruns mlflow-sqlite-build-image mlflow-sqlite-up mlflow-sqlite-logs mlflow-sqlite-down train-sqlite evaluate-sqlite register-sqlite promote-sqlite workflow-sqlite build-model-image-sqlite reset-mlruns
+.PHONY: all train evaluate register promote workflow build-model-image build-project-image fix-mlflow-perms clean-broken-mlruns mlflow-sqlite-build-image mlflow-sqlite-up mlflow-sqlite-logs mlflow-sqlite-down train-sqlite evaluate-sqlite register-sqlite promote-sqlite workflow-sqlite build-model-image-sqlite reset-mlruns kill-local-mlflow
+
+# Kill any local process using MLflow ports (5000, 5001)
+kill-local-mlflow:
+	@echo "Cleaning up local ports..."
+	@fuser -k 5000/tcp >/dev/null 2>&1 || true
+	@fuser -k 5001/tcp >/dev/null 2>&1 || true
+
 
 MLFLOW_EXPERIMENT_NAME := Churn_Prediction_Basic
 PY_WARNINGS := ignore::FutureWarning

@@ -1,5 +1,5 @@
 FROM python:3.10-slim
-RUN pip install mlflow==3.8.1
+RUN pip install mlflow==3.11.1
 WORKDIR /mlflow
 RUN mkdir -p /mlflow/data /mlflow/artifacts
 EXPOSE 5001
