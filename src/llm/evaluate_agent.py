@@ -208,7 +208,7 @@ def llm_judge_score(query: str, output: str, expected_answer: str) -> float:
             return max(0.0, min(1.0, score))
 
         # Fallback: extract first float in [0,1] from free-text answer
-        m = re.search(r"[01](?:\.\d+)?", txt)
+        m = re.search(r"\b([01](?:\.\d+)?)\b", txt)
         if m:
             score = float(m.group(1))
             return max(0.0, min(1.0, score))
