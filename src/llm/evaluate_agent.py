@@ -241,6 +241,7 @@ def evaluate_agent(version=1, max_queries: Optional[int] = None, timeout_seconds
     # Stability knobs for local eval
     os.environ.setdefault("MLFLOW_GENAI_EVAL_SKIP_TRACE_VALIDATION", "True")
     os.environ.setdefault("MLFLOW_GENAI_EVAL_MAX_WORKERS", "1")
+    os.environ.setdefault("MLFLOW_DISABLE_TELEMETRY", "true")  # MLflow 3.16.1: avoids an import-lock deadlock (hang at "Evaluating 0/N")
 
     eval_path = ROOT / "data" / "eval_retention.jsonl"
     eval_df = pd.read_json(eval_path, lines=True)
