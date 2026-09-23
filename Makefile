@@ -136,8 +136,21 @@ health: ## Check if the model server is healthy
 	@curl -sf http://localhost:5001/health && echo " OK" || echo " model-server not reachable"
 
 .PHONY: mlflow-ui
-mlflow-ui: ## Open the MLflow UI in the default browser
-	start http://localhost:5000
+mlflow-ui: ## Print the MLflow UI URL and open it in a browser when possible
+	@echo "  MLflow UI: $(MLFLOW_URI)"
+	@command -v xdg-open >/dev/null 2>&1 && xdg-open $(MLFLOW_URI) >/dev/null 2>&1 || true
+
+# ---- Evaluation shortcuts (debugging) ---------------------------------------
+
+# Fast evaluation (for debugging)
+.PHONY: evaluate-agent-fast
+evaluate-agent-fast: ## Fast evaluation with limited queries. Usage: make evaluate-agent-fast version=1 max=3
+	MLFLOW_TRACKING_URI=$(MLFLOW_URI) uv run python src/llm/evaluate_agent.py --version $(version) --max-queries $(or $(max),3) --timeout 30
+
+# Direct evaluation without MLflow project wrapper
+.PHONY: evaluate-agent-direct
+evaluate-agent-direct: ## Direct evaluation (no MLflow wrapper). Usage: make evaluate-agent-direct version=1
+	MLFLOW_TRACKING_URI=$(MLFLOW_URI) uv run python src/llm/evaluate_agent.py --version $(version)
 
 # ---- Cleanup ---------------------------------------------------------------
 
@@ -160,17 +173,3 @@ help: ## Show available commands
 	@echo ""
 
 .DEFAULT_GOAL := help
-# Fast evaluation (for debugging)
-.PHONY: evaluate-agent-fast
-evaluate-agent-fast: ## Fast evaluation with limited queries. Usage: make evaluate-agent-fast version=1 max=3
-MLFLOW_TRACKING_URI=$(MLFLOW_URI) uv run python src/llm/evaluate_agent.py --version $(version) --max-queries $(max) --timeout 30
-
-# Direct evaluation without MLflow project wrapper
-.PHONY: evaluate-agent-direct
-evaluate-agent-direct: ## Direct evaluation (no MLflow wrapper). Usage: make evaluate-agent-direct version=1
-MLFLOW_TRACKING_URI=$(MLFLOW_URI) uv run python src/llm/evaluate_agent.py --version $(version)
-
-# Professional evaluation
-.PHONY: evaluate-agent-pro
-evaluate-agent-pro: ## Professional parallel evaluation. Usage: make evaluate-agent-pro version=1 max=10 workers=3
-MLFLOW_TRACKING_URI=$(MLFLOW_URI) uv run python src/llm/evaluate_agent_pro.py --version $(version) --max-queries $(or $(max),10) --max-workers $(or $(workers),3)
