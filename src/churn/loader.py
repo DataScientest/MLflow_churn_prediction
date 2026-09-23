@@ -28,7 +28,7 @@ def load_data(path="data/telco_churn.csv"):
         
     # 5. Categorical Encoding
     # Identify categorical columns (object type)
-    cat_cols = df.select_dtypes(include=['object']).columns.tolist()
+    cat_cols = df.select_dtypes(include=['object', 'str']).columns.tolist()  # pandas 3: text columns are 'str'
     
     # For linear models and tree-based models, One-Hot Encoding is a safe bet for low-cardinality nominal vars.
     # We use drop_first=True to avoid multicollinearity for linear models (dummy variable trap).
