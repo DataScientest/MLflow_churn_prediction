@@ -208,7 +208,7 @@ def llm_judge_score(query: str, output: str, expected_answer: str) -> float:
             return max(0.0, min(1.0, score))
 
         # Fallback: extract first float in [0,1] from free-text answer
-        m = re.search(r"[01](?:\.\d+)?", txt)
+        m = re.search(r"\b([01](?:\.\d+)?)\b", txt)
         if m:
             score = float(m.group(1))
             return max(0.0, min(1.0, score))
@@ -241,6 +241,7 @@ def evaluate_agent(version=1, max_queries: Optional[int] = None, timeout_seconds
     # Stability knobs for local eval
     os.environ.setdefault("MLFLOW_GENAI_EVAL_SKIP_TRACE_VALIDATION", "True")
     os.environ.setdefault("MLFLOW_GENAI_EVAL_MAX_WORKERS", "1")
+    os.environ.setdefault("MLFLOW_DISABLE_TELEMETRY", "true")  # MLflow 3.16.1: avoids an import-lock deadlock (hang at "Evaluating 0/N")
 
     eval_path = ROOT / "data" / "eval_retention.jsonl"
     eval_df = pd.read_json(eval_path, lines=True)
