@@ -13,7 +13,7 @@ PROMPT_NAME = "retention-assistant-prompt"
 #
 # These aliases allow agent.py (or any serving layer) to load the production
 # prompt simply with:
-#   mlflow.genai.load_prompt(PROMPT_NAME, version="@production")
+#   mlflow.genai.load_prompt(f"prompts:/{PROMPT_NAME}@production")
 ALIAS_PRODUCTION = "production"
 ALIAS_CHALLENGER = "challenger"
 

@@ -79,7 +79,8 @@ def create_retention_agent(prompt_version=1):
         llm = ChatOpenAI(
             model=model_name,
             temperature=0,
-            base_url=os.getenv("LITELLM_BASE_URL", ""),
+            # None (not "") so that the OpenAI SDK falls back to OPENAI_BASE_URL when LITELLM_BASE_URL is unset
+            base_url=os.getenv("LITELLM_BASE_URL") or None,
             api_key=os.getenv("LITELLM_KEY") or os.getenv("OPENAI_API_KEY"),
         )
 
