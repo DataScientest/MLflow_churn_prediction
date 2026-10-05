@@ -3,7 +3,7 @@
 Run with: OPENAI_API_KEY=... OPENAI_BASE_URL=https://ai-gateway.liora.tech/v1 uv run pytest -m live -q
 
 The model is set by LIVE_LLM_MODEL (default gpt-4o-mini), not by LLM_MODEL /
-JUDGE_LLM_MODEL: those come from the course .env (LLM_MODEL=gemma3:4b is an
+JUDGE_LLM_MODEL: those come from the course .env (LLM_MODEL=gemma3:4b, the local option, is an
 Ollama model that the gateway rejects).
 """
 import os

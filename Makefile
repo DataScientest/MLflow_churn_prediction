@@ -24,18 +24,19 @@
 
 COMPOSE_FILE   := docker/compose.yml
 MLFLOW_URI     := http://localhost:5000
+COMPOSE        := docker compose
 
 # ---- Build ----------------------------------------------------------------
 
 .PHONY: build
 build: ## Build the shared Docker image (churn-prediction-env)
-	docker-compose -f $(COMPOSE_FILE) build
+	$(COMPOSE) -f $(COMPOSE_FILE) build
 
 # ---- Infrastructure -------------------------------------------------------
 
 .PHONY: infra-up
 infra-up: ## Start postgres, mlflow-server, and chroma-server
-	docker-compose -f $(COMPOSE_FILE) up -d postgres mlflow-server chroma-server
+	$(COMPOSE) -f $(COMPOSE_FILE) up -d postgres mlflow-server chroma-server
 	@echo ""
 	@echo "  MLflow UI: http://localhost:5000"
 	@echo "  ChromaDB:  http://localhost:8000"
@@ -43,17 +44,17 @@ infra-up: ## Start postgres, mlflow-server, and chroma-server
 
 .PHONY: infra-down
 infra-down: ## Stop all containers (data volumes are preserved)
-	docker-compose -f $(COMPOSE_FILE) down
+	$(COMPOSE) -f $(COMPOSE_FILE) down
 
 .PHONY: infra-logs
 infra-logs: ## Tail logs for infrastructure containers
-	docker-compose -f $(COMPOSE_FILE) logs -f mlflow-server postgres
+	$(COMPOSE) -f $(COMPOSE_FILE) logs -f mlflow-server postgres
 
 # ---- Pipeline (inside Docker — RECOMMENDED) --------------------------------
 
 .PHONY: docker-pipeline
 docker-pipeline: ## Run the full MLOps pipeline inside Docker (artifacts go to shared volume)
-	docker-compose -f $(COMPOSE_FILE) run --rm pipeline-runner
+	$(COMPOSE) -f $(COMPOSE_FILE) run --rm pipeline-runner
 	@echo ""
 	@echo "  Pipeline complete. Run 'make model-server-up' to serve the model."
 
@@ -83,17 +84,17 @@ promote: ## Run promotion step only (local)
 
 .PHONY: model-server-up
 model-server-up: ## Start the model server (run after docker-pipeline)
-	docker-compose -f $(COMPOSE_FILE) up -d model-server
+	$(COMPOSE) -f $(COMPOSE_FILE) up -d model-server
 	@echo "  Model server starting at http://localhost:5001"
 	@echo "  Run 'make model-server-logs' to monitor startup."
 
 .PHONY: model-server-logs
 model-server-logs: ## Tail model-server logs
-	docker-compose -f $(COMPOSE_FILE) logs -f model-server
+	$(COMPOSE) -f $(COMPOSE_FILE) logs -f model-server
 
 .PHONY: model-server-down
 model-server-down: ## Stop the model server
-	docker-compose -f $(COMPOSE_FILE) stop model-server
+	$(COMPOSE) -f $(COMPOSE_FILE) stop model-server
 
 # ---- LLMOps & Agent --------------------------------------------------------
 
@@ -114,8 +115,8 @@ test: ## Run the offline pytest suite (live LLM tests excluded; use 'uv run pyte
 	uv run pytest -q
 
 .PHONY: evaluate-agent
-evaluate-agent: ## Evaluate agent via MLflow GenAI eval. Usage: make evaluate-agent version=1 [max=10] [agent_provider=ollama|openai] [agent_model=gemma3:4b|gpt-4o-mini]
-	bash -c 'set -a; [ -f .env ] && . ./.env; set +a; MLFLOW_TRACKING_URI=$(MLFLOW_URI) MLFLOW_LANGCHAIN_AUTOLOG=0 AGENT_LLM_PROVIDER=$(or $(agent_provider),ollama) AGENT_LLM_MODEL=$(or $(agent_model),gemma3:4b) LITELLM_BASE_URL=$${LITELLM_BASE_URL:-https://ai-gateway.liora.tech/} OPENAI_API_KEY="$${OPENAI_API_KEY:-$${LITELLM_KEY}}" JUDGE_ENABLED=$${JUDGE_ENABLED:-1} JUDGE_LLM_MODEL=$${JUDGE_LLM_MODEL:-gpt-4o-mini} JUDGE_BASE_URL=$${JUDGE_BASE_URL:-$${LITELLM_BASE_URL:-https://ai-gateway.liora.tech/}} JUDGE_API_KEY="$${JUDGE_API_KEY:-$${OPENAI_API_KEY:-$${LITELLM_KEY}}}" uv run python src/llm/evaluate_agent.py --version $(version) --max-queries $${max:-10} --debug'
+evaluate-agent: ## Evaluate agent via MLflow GenAI eval. Usage: make evaluate-agent version=1 [max=10] [agent_provider=openai|ollama] [agent_model=gpt-4o-mini|gemma3:4b]
+	bash -c 'set -a; [ -f .env ] && . ./.env; set +a; MLFLOW_TRACKING_URI=$(MLFLOW_URI) MLFLOW_LANGCHAIN_AUTOLOG=0 AGENT_LLM_PROVIDER=$(or $(agent_provider),openai) AGENT_LLM_MODEL=$(or $(agent_model),gpt-4o-mini) LITELLM_BASE_URL=$${LITELLM_BASE_URL:-https://ai-gateway.liora.tech/} OPENAI_API_KEY="$${OPENAI_API_KEY:-$${LITELLM_KEY}}" JUDGE_ENABLED=$${JUDGE_ENABLED:-1} JUDGE_LLM_MODEL=$${JUDGE_LLM_MODEL:-gpt-4o-mini} JUDGE_BASE_URL=$${JUDGE_BASE_URL:-$${LITELLM_BASE_URL:-https://ai-gateway.liora.tech/}} JUDGE_API_KEY="$${JUDGE_API_KEY:-$${OPENAI_API_KEY:-$${LITELLM_KEY}}}" uv run python src/llm/evaluate_agent.py --version $(version) --max-queries $${max:-10} --debug'
 
 .PHONY: release-decision
 release-decision: ## Run release decision (Phase 5). Usage: make release-decision baseline=1 candidate=2
@@ -123,13 +124,13 @@ release-decision: ## Run release decision (Phase 5). Usage: make release-decisio
 
 .PHONY: agent-up
 agent-up: ## Start the agent service container
-	docker-compose -f $(COMPOSE_FILE) up -d agent-service
+	$(COMPOSE) -f $(COMPOSE_FILE) up -d agent-service
 
 # ---- Diagnostics -----------------------------------------------------------
 
 .PHONY: ps
 ps: ## Show running containers and their status
-	docker-compose -f $(COMPOSE_FILE) ps
+	$(COMPOSE) -f $(COMPOSE_FILE) ps
 
 .PHONY: health
 health: ## Check if the model server is healthy
@@ -156,7 +157,7 @@ evaluate-agent-direct: ## Direct evaluation (no MLflow wrapper). Usage: make eva
 
 .PHONY: reset
 reset: ## ⚠ Stop containers AND delete ALL data volumes (full clean slate)
-	docker-compose -f $(COMPOSE_FILE) down -v
+	$(COMPOSE) -f $(COMPOSE_FILE) down -v
 	@echo ""
 	@echo "  All containers stopped and volumes deleted."
 	@echo "  Run 'make infra-up && make docker-pipeline && make model-server-up' to start fresh."
