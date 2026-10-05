@@ -10,7 +10,7 @@
 # The pipeline must be run INSIDE Docker (via pipeline-runner) so that
 # artifacts are written directly to the shared mlruns_data volume.
 # Running the pipeline on the host would write to the host filesystem,
-# not to the volume — use `make docker-pipeline` or `docker-compose run pipeline-runner`.
+# not to the volume — use `make docker-pipeline` or `docker compose run pipeline-runner`.
 #
 # STANDARD WORKFLOW:
 #   1. make infra-up          → start postgres + mlflow-server + chroma
