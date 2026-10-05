@@ -115,8 +115,8 @@ test: ## Run the offline pytest suite (live LLM tests excluded; use 'uv run pyte
 	uv run pytest -q
 
 .PHONY: evaluate-agent
-evaluate-agent: ## Evaluate agent via MLflow GenAI eval. Usage: make evaluate-agent version=1 [max=10] [agent_provider=ollama|openai] [agent_model=gemma3:4b|gpt-4o-mini]
-	bash -c 'set -a; [ -f .env ] && . ./.env; set +a; MLFLOW_TRACKING_URI=$(MLFLOW_URI) MLFLOW_LANGCHAIN_AUTOLOG=0 AGENT_LLM_PROVIDER=$(or $(agent_provider),ollama) AGENT_LLM_MODEL=$(or $(agent_model),gemma3:4b) LITELLM_BASE_URL=$${LITELLM_BASE_URL:-https://ai-gateway.liora.tech/} OPENAI_API_KEY="$${OPENAI_API_KEY:-$${LITELLM_KEY}}" JUDGE_ENABLED=$${JUDGE_ENABLED:-1} JUDGE_LLM_MODEL=$${JUDGE_LLM_MODEL:-gpt-4o-mini} JUDGE_BASE_URL=$${JUDGE_BASE_URL:-$${LITELLM_BASE_URL:-https://ai-gateway.liora.tech/}} JUDGE_API_KEY="$${JUDGE_API_KEY:-$${OPENAI_API_KEY:-$${LITELLM_KEY}}}" uv run python src/llm/evaluate_agent.py --version $(version) --max-queries $${max:-10} --debug'
+evaluate-agent: ## Evaluate agent via MLflow GenAI eval. Usage: make evaluate-agent version=1 [max=10] [agent_provider=openai|ollama] [agent_model=gpt-4o-mini|gemma3:4b]
+	bash -c 'set -a; [ -f .env ] && . ./.env; set +a; MLFLOW_TRACKING_URI=$(MLFLOW_URI) MLFLOW_LANGCHAIN_AUTOLOG=0 AGENT_LLM_PROVIDER=$(or $(agent_provider),openai) AGENT_LLM_MODEL=$(or $(agent_model),gpt-4o-mini) LITELLM_BASE_URL=$${LITELLM_BASE_URL:-https://ai-gateway.liora.tech/} OPENAI_API_KEY="$${OPENAI_API_KEY:-$${LITELLM_KEY}}" JUDGE_ENABLED=$${JUDGE_ENABLED:-1} JUDGE_LLM_MODEL=$${JUDGE_LLM_MODEL:-gpt-4o-mini} JUDGE_BASE_URL=$${JUDGE_BASE_URL:-$${LITELLM_BASE_URL:-https://ai-gateway.liora.tech/}} JUDGE_API_KEY="$${JUDGE_API_KEY:-$${OPENAI_API_KEY:-$${LITELLM_KEY}}}" uv run python src/llm/evaluate_agent.py --version $(version) --max-queries $${max:-10} --debug'
 
 .PHONY: release-decision
 release-decision: ## Run release decision (Phase 5). Usage: make release-decision baseline=1 candidate=2

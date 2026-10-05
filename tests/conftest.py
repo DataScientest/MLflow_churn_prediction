@@ -19,7 +19,7 @@ os.environ.setdefault("MLFLOW_DISABLE_AGENT_HINT", "1")
 # Snapshot of the environment taken before any test module is imported.
 # Several scripts call ``load_dotenv(override=True)`` at import time
 # (release_decision.py, search_index.py, test_agent_trace.py): during collection
-# they would inject the learner's .env (e.g. LLM_MODEL=gemma3:4b) into os.environ.
+# they would inject the learner's .env (e.g. LLM_MODEL=gpt-4o-mini) into os.environ.
 _ORIGINAL_ENV = dict(os.environ)
 
 EXPERIMENT_NAME = "Churn_Prediction_Basic"
